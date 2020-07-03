@@ -1,13 +1,20 @@
-#include <iostream>
+#include <QtTest>
+#include <QObject>
+
+#include <cmath>
 #include <random>
 #include <vector>
 
-#include <cassert>
-#include<cmath>
-
 #include "ssa.hpp"
 
-int main() {
+class SsaTest: public QObject {
+    Q_OBJECT
+
+        private slots :
+            void testSsa();
+};
+
+void SsaTest::testSsa() {
     double mu = 100.0;
     double gamma = 1.0;
 
@@ -28,13 +35,11 @@ int main() {
 
     double t = 0.0;
     while (t < t_end) {
-        std::cout << "t:" << t << "; ";
-        std::cout << "P:" << x[0] << "\n";
         t += ssa(x, propensities, stoich_matrix, gen);
     }
-    std::cout << "P:" << x[0] << "\n";
-    std::cout << "t:" << t << "\n";
 
-    assert(std::abs((x[0] - mu/gamma)/(mu/gamma)) < 0.2);
-    return 0;
+    QVERIFY(std::abs((x[0] - mu/gamma)/(mu/gamma)) < 0.2);
 }
+
+QTEST_MAIN(SsaTest)
+#include "SsaTest.moc"
