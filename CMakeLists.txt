@@ -5,9 +5,12 @@ project(Gpgmp VERSION 0.1)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
+set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
 set(CMAKE_CXX_STANDARD 14)
 
 find_package(Qt5Test REQUIRED)
+find_package(Boost REQUIRED)
+include_directories(${Boost_INCLUDE_DIR})
 
 include_directories(include)
 
@@ -18,6 +21,12 @@ file(
 
 enable_testing(true)
 
-add_executable(SsaTest tests/SsaTest.cpp ${SOURCES})
-target_link_libraries(SsaTest PRIVATE Qt5::Test)
-add_test(SsaTest SsaTest)
+macro (register_test name source)
+    add_executable(${name} ${source} ${SOURCES})
+    target_link_libraries(${name} PRIVATE Qt5::Test)
+    target_link_libraries(${name} LINK_PUBLIC ${Boost_LIBRARIES})
+    add_test(${name} ${name})
+endmacro ()
+
+register_test(SsaTest tests/SsaTest.cpp)
+register_test(MultiparticleTest tests/MultiparticleTest.cpp)

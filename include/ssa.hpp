@@ -7,14 +7,13 @@
 #include <random>
 #include <vector>
 
-typedef std::vector<int> species;
-typedef std::function<double(const species&)> propensity;
+#include "gpgmp.hpp"
 
 void ssa(
         species& x,
         double t_end,
         const std::vector<propensity>& propensities,
-        const std::vector<species>& stoich_matrix,
+        const std::vector<std::vector<int>>& stoich_matrix,
         std::mt19937& gen);
 
 #endif

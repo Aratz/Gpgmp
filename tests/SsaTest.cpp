@@ -14,6 +14,9 @@ class SsaTest: public QObject {
             void testSsa();
 };
 
+//TODO test empty
+//TODO test no reaction
+
 void SsaTest::testSsa() {
     double mu = 100.0;
     double gamma = 1.0;
@@ -23,8 +26,10 @@ void SsaTest::testSsa() {
     std::random_device rd;
     std::mt19937 gen(rd());
 
-    species x {0};
-    std::vector<species> stoich_matrix {
+    grid domain(boost::extents[1][1][1]);
+    species x = domain[boost::indices[0][0][range(0, 1)]];
+
+    std::vector<std::vector<int>> stoich_matrix {
         { 1 },
         { -1 }
     };

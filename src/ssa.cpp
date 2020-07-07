@@ -4,7 +4,7 @@ void ssa(
         species& x,
         double t_end,
         const std::vector<propensity>& propensities,
-        const std::vector<species>& stoich_matrix,
+        const std::vector<std::vector<int>>& stoich_matrix,
         std::mt19937& gen) {
     double t = 0.0;
 
