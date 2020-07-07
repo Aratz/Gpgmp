@@ -5,7 +5,7 @@
 #include <random>
 #include <vector>
 
-#include "gpgmp.hpp"
+#include "grid.hpp"
 
 void multiparticle(
         grid& domain,

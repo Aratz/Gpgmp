@@ -7,7 +7,7 @@
 #include <random>
 #include <vector>
 
-#include "gpgmp.hpp"
+#include "grid.hpp"
 
 void ssa(
         species& x,

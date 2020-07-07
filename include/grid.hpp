@@ -1,5 +1,5 @@
-#ifndef GPGMP_H
-#define GPGMP_H
+#ifndef GRID_H
+#define GRID_H
 
 #include "boost/multi_array.hpp"
 
