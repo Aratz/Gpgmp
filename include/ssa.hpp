@@ -10,8 +10,9 @@
 typedef std::vector<int> species;
 typedef std::function<double(const species&)> propensity;
 
-double ssa(
+void ssa(
         species& x,
+        double t_end,
         const std::vector<propensity>& propensities,
         const std::vector<species>& stoich_matrix,
         std::mt19937& gen);

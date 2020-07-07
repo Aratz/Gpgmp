@@ -33,10 +33,7 @@ void SsaTest::testSsa() {
         [gamma] (const species& x) { return gamma * x[0]; },
     };
 
-    double t = 0.0;
-    while (t < t_end) {
-        t += ssa(x, propensities, stoich_matrix, gen);
-    }
+    ssa(x, t_end, propensities, stoich_matrix, gen);
 
     QVERIFY(std::abs((x[0] - mu/gamma)/(mu/gamma)) < 0.2);
 }

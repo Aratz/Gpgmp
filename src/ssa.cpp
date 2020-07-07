@@ -1,29 +1,35 @@
 #include "ssa.hpp"
 
-double ssa(
+void ssa(
         species& x,
+        double t_end,
         const std::vector<propensity>& propensities,
         const std::vector<species>& stoich_matrix,
         std::mt19937& gen) {
-    std::vector<double> a;
-    std::uniform_real_distribution<> dis(0.0, 1.0);
+    double t = 0.0;
 
-    a.reserve(propensities.size());
+    while (t < t_end) {
+        std::vector<double> a;
+        std::uniform_real_distribution<> dis(0.0, 1.0);
 
-    std::transform(propensities.cbegin(), propensities.cend(), back_inserter(a),
-            [&x] (auto p) { return p(x); });
+        a.reserve(propensities.size());
 
-    std::partial_sum(a.begin(), a.end(), a.begin());
+        std::transform(propensities.begin(), propensities.end(), back_inserter(a),
+                [&x] (auto p) { return p(x); });
 
-    double a_0 = a.back();
-    double tau = log(1./(1.-dis(gen)))/a_0;
+        std::partial_sum(a.begin(), a.end(), a.begin());
 
-    int i = std::distance(
-            a.cbegin(),
-            std::lower_bound(a.cbegin(), a.cend(), dis(gen) * a_0));
+        double a_0 = a.back();
 
-    std::transform(x.cbegin(), x.cend(), stoich_matrix[i].cbegin(),
-            x.begin(), std::plus<>{});
+        double tau = log(1./(1.-dis(gen)))/a_0;
 
-    return tau;
+        if ((t += tau) < t_end) {
+            int i = std::distance(
+                    a.begin(),
+                    std::lower_bound(a.begin(), a.end(), dis(gen) * a_0));
+
+            std::transform(x.begin(), x.end(), stoich_matrix[i].cbegin(),
+                    x.begin(), std::plus<>{});
+        }
+    }
 }
