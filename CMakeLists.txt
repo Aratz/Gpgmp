@@ -30,3 +30,4 @@ endmacro ()
 
 register_test(SsaTest tests/SsaTest.cpp)
 register_test(MultiparticleTest tests/MultiparticleTest.cpp)
+register_test(GpgmpTest tests/GpgmpTest.cpp)
