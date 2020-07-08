@@ -1,6 +1,10 @@
 #include "multiparticle.hpp"
 
-void multiparticle(grid& domain, double p, std::mt19937& gen) {
+void multiparticle(
+        grid& domain,
+        double p,
+        int s,
+        std::mt19937& gen) {
     std::uniform_real_distribution<> dis(0.0, 1.0);
 
     auto shape = domain.shape();
@@ -12,15 +16,13 @@ void multiparticle(grid& domain, double p, std::mt19937& gen) {
 
     for (auto x = 0; x < Nx; ++x){
         for (auto y = 0; y < Ny; ++y){
-            for (auto s = 0; s < Ns; ++s){
-                int dn = 0;
-                for (auto n = 0; n < domain[x][y][s]; ++n){
-                    int u = dis(gen) < p;
-                    lost_particles[x][y][s][(size_t) (dis(gen)*2*DIM)] += u;
-                    dn += u;
-                }
-                domain[x][y][s] -= dn;
+            int dn = 0;
+            for (auto n = 0; n < domain[x][y][s]; ++n){
+                int u = dis(gen) < p;
+                lost_particles[x][y][s][(size_t) (dis(gen)*2*DIM)] += u;
+                dn += u;
             }
+            domain[x][y][s] -= dn;
         }
     }
 
@@ -30,25 +32,21 @@ void multiparticle(grid& domain, double p, std::mt19937& gen) {
 
         for (auto x = 0; x < Nx; ++x){
             for (auto y = 0; y < Ny; ++y){
-                for (auto s = 0; s < Ns; ++s){
-                    auto outofbounds = (0 > x + dx || Nx <= x + dx
-                                        || 0 > y + dy || Ny <= y + dy);
+                auto outofbounds = (0 > x + dx || Nx <= x + dx
+                                    || 0 > y + dy || Ny <= y + dy);
 
-                    if (!outofbounds) {
-                        domain[x][y][s] += lost_particles[x + dx][y + dy][s][d];
-                    }
-                    else {
-                        /**/
-                        domain[x][y][s] += lost_particles
-                            [(x < -dx || x + dx >= Nx?x:x+dx)]
-                            [(y < -dy || y + dy >= Ny?y:y+dy)]
-                            [s]
-                            [(d + DIM)%(2*DIM)];
-                    }
+                if (!outofbounds) {
+                    domain[x][y][s] += lost_particles[x + dx][y + dy][s][d];
+                }
+                else {
+                    /**/
+                    domain[x][y][s] += lost_particles
+                        [(x < -dx || x + dx >= Nx?x:x+dx)]
+                        [(y < -dy || y + dy >= Ny?y:y+dy)]
+                        [s]
+                        [(d + DIM)%(2*DIM)];
                 }
             }
         }
     }
 }
-
-

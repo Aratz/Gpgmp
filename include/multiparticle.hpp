@@ -10,6 +10,7 @@
 void multiparticle(
         grid& domain,
         double p,
+        int s,
         std::mt19937& gen
         );
 

@@ -29,7 +29,7 @@ void MultiparticleTest::testEmpty() {
     grid domain(boost::extents[Nx][Ny][Ns]);
 
     for (auto i = 0; i < 100; ++i)
-        multiparticle(domain, 0.5, gen);
+        multiparticle(domain, 0.5, 0, gen);
 
     for (grid::index i = 0; i != Nx; ++i)
         for (grid::index j = 0; j != Ny; ++j)
@@ -51,7 +51,7 @@ void MultiparticleTest::testConstant() {
             domain[i][j][0] = 1;
 
     for (auto i = 0; i < 100; ++i)
-        multiparticle(domain, 0.5, gen);
+        multiparticle(domain, 0.5, 0, gen);
 
     auto sum = 0;
     for (grid::index i = 0; i != Nx; ++i)
@@ -71,15 +71,16 @@ void MultiparticleTest::testTwoSpecies() {
 
     grid domain(boost::extents[Nx][Ny][Ns]);
 
-    for(grid::index s=0; s!= Ns; s++)
+    for (grid::index s=0; s != Ns; s++)
         for (grid::index i = 0; i != Nx; ++i)
             for (grid::index j = 0; j != Ny; ++j)
                 domain[i][j][s] = s + 1;
 
     for (auto i = 0; i < 100; ++i)
-        multiparticle(domain, 0.5, gen);
+        for (grid::index s=0; s != Ns; s++)
+            multiparticle(domain, 0.5, s, gen);
 
-    for(grid::index s=0; s!= Ns; s++){
+    for (grid::index s=0; s != Ns; s++){
         auto sum = 0;
         for (grid::index i = 0; i != Nx; ++i)
             for (grid::index j = 0; j != Ny; ++j)
@@ -101,7 +102,7 @@ void MultiparticleTest::testFixed() {
     domain[0][0][0] = 1;
 
     for (auto i = 0; i < 100; ++i)
-        multiparticle(domain, 0.0, gen);
+        multiparticle(domain, 0.0, 0, gen);
 
     for (grid::index i = 0; i != Nx; ++i){
         for (grid::index j = 0; j != Ny; ++j){
@@ -127,7 +128,7 @@ void MultiparticleTest::testUniform() {
     domain[0][0][0] = total;
 
     for (auto i = 0; i < 100; ++i)
-        multiparticle(domain, 0.5, gen);
+        multiparticle(domain, 0.5, 0, gen);
 
     for (grid::index i = 0; i != Nx; ++i){
         for (grid::index j = 0; j != Ny; ++j){
