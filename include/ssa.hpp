@@ -10,7 +10,7 @@
 #include "grid.hpp"
 
 void ssa(
-        species& x,
+        grid& domain,
         double t_end,
         const std::vector<propensity>& propensities,
         const std::vector<std::vector<int>>& stoich_matrix,

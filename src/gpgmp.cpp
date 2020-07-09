@@ -31,17 +31,13 @@ void simulate(
     while (t < t_end) {
         auto it_s = std::min_element(t_s.begin(), t_s.end());
 
-        for (auto x = 0; x < Nx; ++x){
-            for (auto y = 0; y < Ny; ++y){
-                auto subvolume = domain[boost::indices[x][y][range(0, Ns)]];
-                ssa(
-                        subvolume,
-                        *it_s - t,
-                        propensities,
-                        stoich_matrix,
-                        gen);
-            }
-        }
+        ssa(
+                domain,
+                *it_s - t,
+                propensities,
+                stoich_matrix,
+                gen);
+
         t = *it_s;
 
         multiparticle(
