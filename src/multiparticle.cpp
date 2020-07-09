@@ -12,14 +12,14 @@ void multiparticle(
     auto Ny = shape[1];
     auto Ns = shape[2];
 
-    boost::multi_array<int, DIM + 2> lost_particles(boost::extents[Nx][Ny][Ns][2*DIM]);
+    boost::multi_array<int, DIM + 1> lost_particles(boost::extents[Nx][Ny][2*DIM]);
 
     for (auto x = 0; x < Nx; ++x){
         for (auto y = 0; y < Ny; ++y){
             int dn = 0;
             for (auto n = 0; n < domain[x][y][s]; ++n){
                 int u = dis(gen) < p;
-                lost_particles[x][y][s][(size_t) (dis(gen)*2*DIM)] += u;
+                lost_particles[x][y][(size_t) (dis(gen)*2*DIM)] += u;
                 dn += u;
             }
             domain[x][y][s] -= dn;
@@ -36,14 +36,13 @@ void multiparticle(
                                     || 0 > y + dy || Ny <= y + dy);
 
                 if (!outofbounds) {
-                    domain[x][y][s] += lost_particles[x + dx][y + dy][s][d];
+                    domain[x][y][s] += lost_particles[x + dx][y + dy][d];
                 }
                 else {
                     /**/
                     domain[x][y][s] += lost_particles
                         [(x < -dx || x + dx >= Nx?x:x+dx)]
                         [(y < -dy || y + dy >= Ny?y:y+dy)]
-                        [s]
                         [(d + DIM)%(2*DIM)];
                 }
             }
