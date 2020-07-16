@@ -77,17 +77,22 @@ __global__ void multiparticlegpu(
     }
 }
 
-__global__ void multiparticle(
+__host__ void multiparticle(
         int* domain,
         int* lost_particles,
         double p,
         int s,
-        int* domain_shape
+        int domain_shape[4]
         ) {
     int Nx = domain_shape[0];
     int Ny = domain_shape[1];
 
+    int* dev_domain_shape;
+    cudaMalloc((void **) &dev_domain_shape, 4 * sizeof(int));
+    cudaMemcpy(dev_domain_shape, domain_shape, 4 * sizeof(int),
+            cudaMemcpyHostToDevice);
+
     dim3 N(Nx, Ny);
 
-    multiparticlegpu<<<N,1>>>(domain, lost_particles, 0.5, 0, domain_shape);
+    multiparticlegpu<<<N,1>>>(domain, lost_particles, 0.5, 0, dev_domain_shape);
 }

@@ -1,6 +1,8 @@
 #include <QtTest>
 #include <QObject>
 
+#include<iostream>
+
 #include <cmath>
 #include <cuda.h>
 
@@ -175,19 +177,18 @@ void MultiparticleGpuTest::testUniform() {
     cudaMemcpy(dev_domain, &domain[0][0][0], domain.num_elements() * sizeof(int),
             cudaMemcpyHostToDevice);
 
-    __constant__  int dev_domain_shape[4];
-    cudaMemcpyToSymbol(dev_domain_shape, shape, 4 * sizeof(int));
-
     int* dev_lost_particles;
     cudaMalloc((void **) &dev_lost_particles, 4 * Nx * Ny * sizeof(int));
 
     for (auto i = 0; i < 100; ++i)
-        multiparticle(dev_domain, dev_lost_particles, 0.5, 0, dev_domain_shape);
+        multiparticle(dev_domain, dev_lost_particles, 0.5, 0, shape);
 
     cudaMemcpy(&domain[0][0][0], dev_domain, domain.num_elements() * sizeof(int),
             cudaMemcpyDeviceToHost);
     for (grid::index i = 0; i != Nx; ++i){
         for (grid::index j = 0; j != Ny; ++j){
+            std::cout << domain[i][j][0] << "\n";
+
             QVERIFY(std::abs(domain[i][j][0] - total/(Nx*Ny)) < total/(Nx*Ny)/10.);
         }
     }

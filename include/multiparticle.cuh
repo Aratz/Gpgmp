@@ -6,7 +6,7 @@
 
 #include "grid.hpp"
 
-__global__ void multiparticle(
+__host__ void multiparticle(
         int* domain,
         int* lost_particles,
         double p,
