@@ -21,9 +21,8 @@ __global__ void multiparticlegpu(
         int s,
         int* domain_shape
         ) {
-
     int threadID;
-    threadID = blockIdx.x * blockDim.x + threadIdx.x;
+    threadID = threadIdx.y * blockDim.x + threadIdx.x;
     unsigned int seed = threadID;
     curandState crs;
     curand_init(seed, 0, 0, &crs);
@@ -31,8 +30,8 @@ __global__ void multiparticlegpu(
     int Nx = domain_shape[0];
     int Ny = domain_shape[1];
 
-    const int x = blockIdx.x;
-    const int y = blockIdx.y;
+    const int x = threadIdx.x;
+    const int y = threadIdx.y;
 
     for(int i = 0; i < 4; ++i){
         *sublost_particles(lost_particles, x, y, i, domain_shape) = 0;
@@ -42,7 +41,7 @@ __global__ void multiparticlegpu(
     for (int n = 0; n < *subdomain(domain, x, y, s, domain_shape); ++n){
         int u = curand_uniform(&crs) < p;
         *sublost_particles(lost_particles,
-                x, y, (int) curand_uniform(&crs)*2*DIM,
+                x, y, (int) (curand_uniform(&crs)*2*DIM),
                 domain_shape) += u;
         dn += u;
     }
@@ -87,12 +86,15 @@ __host__ void multiparticle(
     int Nx = domain_shape[0];
     int Ny = domain_shape[1];
 
+
     int* dev_domain_shape;
     cudaMalloc((void **) &dev_domain_shape, 4 * sizeof(int));
     cudaMemcpy(dev_domain_shape, domain_shape, 4 * sizeof(int),
             cudaMemcpyHostToDevice);
 
-    dim3 N(Nx, Ny);
+    dim3 N(Nx, Ny, 1);
 
-    multiparticlegpu<<<N,1>>>(domain, lost_particles, 0.5, 0, dev_domain_shape);
+    multiparticlegpu<<<1, N>>>(domain, lost_particles, 0.5, 0, dev_domain_shape);
+
+    cudaFree(dev_domain_shape);
 }

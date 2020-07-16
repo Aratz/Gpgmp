@@ -46,6 +46,9 @@ void MultiparticleGpuTest::testEmpty() {
     for (grid::index i = 0; i != Nx; ++i)
         for (grid::index j = 0; j != Ny; ++j)
             QCOMPARE(domain[i][j][0], 0);
+
+    cudaFree(dev_domain);
+    cudaFree(dev_lost_particles);
 }
 
 void MultiparticleGpuTest::testConstant() {
@@ -82,6 +85,9 @@ void MultiparticleGpuTest::testConstant() {
             sum += domain[i][j][0];
 
     QCOMPARE(sum, Nx * Ny);
+
+    cudaFree(dev_domain);
+    cudaFree(dev_lost_particles);
 }
 
 void MultiparticleGpuTest::testTwoSpecies() {
@@ -122,6 +128,9 @@ void MultiparticleGpuTest::testTwoSpecies() {
                 sum += domain[i][j][s];
         QCOMPARE(sum, Nx * Ny * ((int) s+1));
     }
+
+    cudaFree(dev_domain);
+    cudaFree(dev_lost_particles);
 }
 
 void MultiparticleGpuTest::testFixed() {
@@ -159,6 +168,9 @@ void MultiparticleGpuTest::testFixed() {
                 QCOMPARE(domain[i][j][0], 1);
         }
     }
+
+    cudaFree(dev_domain);
+    cudaFree(dev_lost_particles);
 }
 
 void MultiparticleGpuTest::testUniform() {
@@ -187,11 +199,13 @@ void MultiparticleGpuTest::testUniform() {
             cudaMemcpyDeviceToHost);
     for (grid::index i = 0; i != Nx; ++i){
         for (grid::index j = 0; j != Ny; ++j){
-            std::cout << domain[i][j][0] << "\n";
-
-            QVERIFY(std::abs(domain[i][j][0] - total/(Nx*Ny)) < total/(Nx*Ny)/10.);
+            QVERIFY(std::abs(domain[i][j][0] - total/(Nx*Ny)) < total/(Nx*Ny)/5.);
         }
     }
+
+
+    cudaFree(dev_domain);
+    cudaFree(dev_lost_particles);
 }
 
 QTEST_MAIN(MultiparticleGpuTest)
