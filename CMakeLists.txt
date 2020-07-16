@@ -13,7 +13,7 @@ enable_language(CUDA)
 set(CMAKE_CUDA_STANDARD 14)
 set(CMAKE_CUDA_STANDARD_REQUIRED ON)
 set(CMAKE_CUDA_COMPILER "/usr/local/cuda-10.2/bin/nvcc")
-set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -lcnpy -O3 -std=c++14 -arch=sm_75 --expt-relaxed-constexpr -rdc=true -lcudadevrt")
+set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -lcnpy -O3 -std=c++14 -arch=sm_52 --expt-relaxed-constexpr -rdc=true -lcudadevrt")
 
 find_package(Qt5Test REQUIRED)
 find_package(Boost REQUIRED)
