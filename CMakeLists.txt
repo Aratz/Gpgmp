@@ -60,8 +60,13 @@ macro (cuda_register_test name source)
     add_test(${name} ${name})
 endmacro ()
 
+macro (cuda_register_benchmark name source)
+    cuda_add_executable(${name} ${source} ${CUDA_SOURCES})
+endmacro ()
+
 register_test(SsaTest tests/SsaTest.cpp)
 register_test(MultiparticleTest tests/MultiparticleTest.cpp)
 register_test(GpgmpTest tests/GpgmpTest.cpp)
 
 cuda_register_test(CudaMultiparticleTest tests/MultiparticleGpuTest.cpp)
+cuda_register_benchmark(CudaMultiparticleBenchmark tests/MultiparticleGpuBenchmark.cpp)
