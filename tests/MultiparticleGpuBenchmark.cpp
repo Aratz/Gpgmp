@@ -7,7 +7,7 @@
 #include "multiparticle.cuh"
 
 int main() {
-    std::vector<int> gridsizes  {10, 100, 1000};
+    std::vector<int> gridsizes  {10, 10, 100, 1000, 10000};
 
     for (int gridsize: gridsizes) {
         int Nx = gridsize;
@@ -31,7 +31,7 @@ int main() {
         int* dev_lost_particles;
         cudaMalloc((void **) &dev_lost_particles, 4 * Nx * Ny * sizeof(int));
 
-        for (auto i = 0; i < 100; ++i)
+        for (auto i = 0; i < 10000; ++i)
             multiparticle(dev_domain, dev_lost_particles, 0.5, 0, shape);
 
         cudaMemcpy(&domain[0][0][0], dev_domain, domain.num_elements() * sizeof(int),
@@ -43,7 +43,7 @@ int main() {
         auto end = std::chrono::steady_clock::now();
 
         std::cout << "Benchmark " << gridsize << "x" << gridsize << ": "
-            << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
-            << " ms\n";
+            << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count()
+            << " microseconds\n";
     }
 }
