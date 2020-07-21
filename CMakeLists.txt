@@ -7,6 +7,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
 set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 
 find_package(Qt5Test REQUIRED)
 find_package(Boost REQUIRED)
@@ -31,3 +32,5 @@ endmacro ()
 register_test(SsaTest tests/SsaTest.cpp)
 register_test(MultiparticleTest tests/MultiparticleTest.cpp)
 register_test(GpgmpTest tests/GpgmpTest.cpp)
+
+register_test(MultiparticleCpuBenchmark tests/MultiparticleCpuBenchmark.cpp)
